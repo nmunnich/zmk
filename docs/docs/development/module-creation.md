@@ -147,7 +147,7 @@ The following requirements are necessary for a module to be included in `zmk-mod
 - [ ] There are no unused files or folders present in the module
 - [ ] The module is up-to-date with the current version of ZMK
 - [ ] If the module defines keyboards or hardware components, said keyboards/components are available for public use (sold by a vendor, open source, etc.)
-- [ ] If the module defines boards or shields, they follow the "good board/shield definition practices"
+- [ ] If the module defines boards or shields, they follow the board/shield definition practices as recommended in the ZMK docs
 
 ### Module File
 
