@@ -13,7 +13,7 @@ sidebar_label: ZMK Module Creation
 ZMK comes with a Git repository called `zmk-modules` which tracks various different modules. This allows modules to be discovered and used by various tools and scripts. The below described creation process will guide you through the creation and addition of a module to `zmk-modules`.
 
 :::tip
-For open source designs, it can be convenient to use [Git submodules](https://github.blog/open-source/git/working-with-submodules/) to have the ZMK module also be a Git submodule of the repository hosting the open source design.
+For open source hardware designs, it can be convenient to use [Git submodules](https://github.blog/open-source/git/working-with-submodules/) to have the ZMK module also be a Git submodule of the repository hosting the hardware design.
 :::
 
 ## Module Setup
@@ -71,9 +71,10 @@ See the `zephyr/module.yml` found in the template for a usage example.
 
 ### Dependencies
 
-If `zephyr/module.yml` has anything listed under `depends`, then you should also define a [west manifest](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html) file. While the `zephyr/modules.yaml` file defines _which_ modules your module depends on, the west manifest file defines _where_ said modules are found. This then allows automatic tooling to fetch the modules when building firmware. If `depends` is not present in `zephyr/module.yml`, then this file (named `west.yml` in the template) is unnecessary.
+If `zephyr/module.yml` has anything listed under `depends`, then you should also define a [west manifest](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html) file. While the `zephyr/module.yml` file defines _which_ modules your module depends on, the west manifest file defines _where_ said modules are found. This then allows automatic tooling to fetch the modules when building firmware. If `depends` is not present in `zephyr/module.yml`, then this file (named `west.yml` in the template) should be removed.
 
 It is recommended that you place the manifest file at the root of your module, though you can place it elsewhere. Be sure to note in your `README.md` that your module uses dependencies, so that users import these correctly.
+Below is an example `west.yml` file for a user that would be using your module, with the necessary `import` field if the module has dependencies:
 
 ```yaml title="west.yml"
 manifest:
@@ -113,13 +114,13 @@ The below table reminds of the purpose of each of these files and folders, if yo
 
 | File or Folder   | Description                                                                            |
 | ---------------- | -------------------------------------------------------------------------------------- |
-| `board/`         | This folder contains definitions for boards and shields.                               |
-| `dts/`           | This folder contains devicetree bindings and includes.                                 |
-| `CMakeLists.txt` | CMake file for the module                                                              |
+| `board/`         | Folder containing definitions for boards, shields and interconnects                               |
+| `dts/`           | Folder containing devicetree bindings and includes with devicetree nodes (.dtsi)                                 |
+| `CMakeLists.txt` | CMake configuration to specify source files to build                                                              |
 | `Kconfig`        | Kconfig file for the module                                                            |
-| `include/`       | Folder to put C header files into                                                      |
+| `include/`       | Folder for C header files                                                       |
 | `src/`           | Folder for C source files                                                              |
-| `snippets/`      | Folder for [snippets](https://docs.zephyrproject.org/latest/build/snippets/index.html) |
+| `snippets/`      | Folder for [snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html) |
 
 Note that the `include` and `src` folders are not mandated by the module system, and all of these can be positioned anywhere in your module's filetree if you adjust the `zephyr/module.yml` accordingly.
 
@@ -164,7 +165,7 @@ versions:
     commit: d1d9b06ebb524d5c8edc6d6dba58b98d98a5a6aa
 ```
 
-The `versions` property is used to assign particular commits in the repository to ZMK versions. This simultaneously protects `zmk-modules` from malicious commits and allows for improved compatibility - if multiple modules are being used, the maximum version that all modules are compatible with is used. Ideally, for each ZMK update a new entry would appear under `versions`. The addition of automated tools to help with this process is planned.
+The `versions` property is used to assign particular commits in the repository to ZMK versions. This simultaneously protects `zmk-modules` from malicious commits and allows for improved compatibility -- if multiple modules are being used, the maximum version that all modules are compatible with is used. Ideally, for each ZMK update a new entry would appear under `versions`. The addition of automated tools to help with this process is planned.
 
 The `remotes` name exists primarily as a fallback in case a module is not maintained for a prolonged period of time. If such an event was to happen, then another user could update the module for a more recent version and "take over" the duties of maintaining the module.
 
