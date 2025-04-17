@@ -1,13 +1,7 @@
-# Zephyr™ Mechanical Keyboard (ZMK) Firmware
+# VOLATILE BRANCH
 
-[![Discord](https://img.shields.io/discord/719497620560543766)](https://zmk.dev/community/discord/invite)
-[![Build](https://github.com/zmkfirmware/zmk/workflows/Build/badge.svg)](https://github.com/zmkfirmware/zmk/actions)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+This is the (unofficial) volatile branch of ZMK. It is a group of PRs that I have chosen to bundle together for testing. The branch is *volatile*. That is to say, unlike an unstable/nightly branch which may semi-frequently have breaking changes, this branch will spontaneously vanish and reappear with new batches of PRs to test. I may also decide to vary the specific name of this branch and instead make this README point to a different branch as the current volatile branch.
 
-[ZMK Firmware](https://zmk.dev/) is an open source ([MIT](LICENSE)) keyboard firmware built on the [Zephyr™ Project](https://www.zephyrproject.org/) Real Time Operating System (RTOS). ZMK's goal is to provide a modern, wireless, and powerful firmware free of licensing issues.
+Essentially, this branch should not be used for production purposes at all. I thank any testers using this branch in advance, your time and effort is appreciated. 
 
-Check out the website to learn more: https://zmk.dev/.
-
-You can also come join our [ZMK Discord Server](https://zmk.dev/community/discord/invite).
-
-To review features, check out the [feature overview](https://zmk.dev/docs/). ZMK is under active development, and new features are listed with the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) in GitHub. Please feel free to add 👍 to the issue description of any requests to upvote the feature.
+The list of PRs that this branch consists of can be found in the commit history.
