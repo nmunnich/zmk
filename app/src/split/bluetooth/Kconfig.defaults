@@ -22,6 +22,13 @@ config BT_MAX_PAIRED
 #ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
 endif
 
+if !ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_PERIPHERAL_ID
+    default 0
+
+endif
+
 endif
 
 if !ZMK_SPLIT_BLE

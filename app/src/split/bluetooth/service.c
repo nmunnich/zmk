@@ -53,6 +53,7 @@ static void split_svc_sensor_state_ccc(const struct bt_gatt_attr *attr, uint16_t
 
 static uint8_t num_of_positions = ZMK_KEYMAP_LEN;
 static uint8_t position_state[POS_STATE_LEN];
+static uint8_t peripheral_id = (uint8_t)CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_ID;
 
 static struct zmk_split_run_behavior_payload behavior_run_payload;
 
@@ -139,6 +140,11 @@ static ssize_t split_svc_get_selected_phys_layout(struct bt_conn *conn,
     return bt_gatt_attr_read(conn, attrs, buf, len, offset, &selected, sizeof(selected));
 }
 
+static ssize_t split_svc_get_peripheral_id(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
+                                           void *buf, uint16_t len, uint16_t offset) {
+    return bt_gatt_attr_read(conn, attrs, buf, len, offset, &peripheral_id, sizeof(uint8_t));
+}
+
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
 
 static void split_input_events_ccc(const struct bt_gatt_attr *attr, uint16_t value) {
@@ -204,7 +210,9 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SELECT_PHYS_LAYOUT_UUID),
                            BT_GATT_CHRC_WRITE | BT_GATT_CHRC_READ,
                            BT_GATT_PERM_WRITE_ENCRYPT | BT_GATT_PERM_READ_ENCRYPT,
-                           split_svc_get_selected_phys_layout, split_svc_select_phys_layout,
+                           split_svc_get_selected_phys_layout, split_svc_select_phys_layout, NULL),
+    BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_GET_PERIPHERAL_ID_UUID),
+                           BT_GATT_CHRC_READ, BT_GATT_PERM_READ, split_svc_get_peripheral_id, NULL,
                            NULL), );
 
 K_THREAD_STACK_DEFINE(service_q_stack, CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE);

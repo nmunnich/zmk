@@ -100,6 +100,9 @@ config BT_MAX_CONN
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
     default n
 
+config ZMK_SPLIT_BLE_PERIPHERAL_ID
+    int "Peripheral ID for the central to identify this peripheral"
+
 endif # !ZMK_SPLIT_ROLE_CENTRAL
 
 endmenu
