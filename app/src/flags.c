@@ -65,11 +65,11 @@ static inline int set_flag_state(zmk_flag_id_t flag, bool state, bool locking) {
     }
     // Don't send flag changes unless there was an actual change
     if (old_state != _zmk_flag_states || old_locks != _zmk_flag_locks) {
-        LOG_DBG("layer_changed: flag %d flag %d locked %d", flag, state, locking);
+        LOG_DBG("layer_changed: flag %d state %d locked %d", flag, state, locking);
 
         ret = raise_flag_state_changed(flag, state, locking);
         if (ret < 0) {
-            LOG_WRN("Failed to raise flag flag changed (%d)", ret);
+            LOG_WRN("Failed to raise flag state changed (%d)", ret);
         }
     }
 
