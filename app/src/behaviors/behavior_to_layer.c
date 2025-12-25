@@ -28,7 +28,9 @@ static int to_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct behavior_to_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
 
     for (int i = ZMK_KEYMAP_LAYERS_LEN - 1; i >= 0; i--) {
-        zmk_flag_deactivate(i, cfg->locking);
+        if (i != binding->param1) {
+            zmk_flag_deactivate(i, cfg->locking);
+        }
     }
 
     zmk_flag_activate(binding->param1, cfg->locking);
