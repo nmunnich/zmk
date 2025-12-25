@@ -672,7 +672,8 @@ int zmk_keymap_sensor_event(uint8_t sensor_index,
                             size_t channel_data_size, int64_t timestamp) {
     bool opaque_response = false;
 
-    for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1; layer_idx >= 0; layer_idx--) {
+    for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1; layer_idx >= ZMK_BOTTOM_LAYER_INDEX;
+         layer_idx--) {
         uint8_t layer_id = LAYER_INDEX_TO_ID(layer_idx);
 
         if (layer_id >= ZMK_KEYMAP_LAYERS_LEN) {
@@ -708,8 +709,9 @@ int zmk_keymap_sensor_event(uint8_t sensor_index,
         }
 
         enum behavior_sensor_binding_process_mode mode =
-            (!opaque_response && layer_idx >= LAYER_ID_TO_INDEX(_zmk_keymap_layer_default) &&
-             zmk_keymap_layer_active(layer_id))
+            (!opaque_response &&
+             ((layer_idx > ZMK_BOTTOM_LAYER_INDEX && zmk_flag_is_active(layer_id)) ||
+              layer_idx == ZMK_BOTTOM_LAYER_INDEX))
                 ? BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER
                 : BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_DISCARD;
 
