@@ -14,7 +14,7 @@
 
 #include <zmk/event_manager.h>
 #include <zmk/keymap.h>
-#include <zmk/events/layer_state_changed.h>
+#include <zmk/events/flag_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -27,7 +27,7 @@ static K_SEM_DEFINE(conditional_layer_sem, 1, 1);
 // a third "adjust" layer if and only if the "lower" and "raise" layers are both active.
 struct conditional_layer_cfg {
     // A bitmask of each layer that must be pressed for this conditional layer config to activate.
-    zmk_keymap_layers_state_t if_layers_state_mask;
+    zmk_flag_state_t if_layers_state_mask;
 
     // The layer number that should be active while all layers in the if-layers mask are active.
     int8_t then_layer;
@@ -57,9 +57,9 @@ static uint32_t layer_locked_by_conditional = 0;
 static void conditional_layer_activate(int8_t layer, bool locking) {
     // This may trigger another event that could, in turn, activate additional then-layers. However,
     // the process will eventually terminate (at worst, when every layer is active).
-    if (!zmk_keymap_layer_active(layer) || (locking && !zmk_keymap_layer_locked(layer))) {
+    if (!zmk_flag_is_active(layer) || (locking && !zmk_flag_is_locked(layer))) {
         LOG_DBG("layer %d", layer);
-        zmk_keymap_layer_activate(layer, locking);
+        zmk_flag_activate(layer, locking);
     }
 }
 
@@ -67,9 +67,9 @@ static void conditional_layer_deactivate(int8_t layer, bool locking) {
     // This may deactivate a then-layer that's already active via another mechanism (e.g., a
     // momentary layer behavior). However, the same problem arises when multiple keys with the same
     // &mo binding are held and then one is released, so it's probably not an issue in practice.
-    if (zmk_keymap_layer_active(layer) && (!zmk_keymap_layer_locked(layer) || locking)) {
+    if (zmk_flag_is_active(layer) && (!zmk_flag_is_locked(layer) || locking)) {
         LOG_DBG("layer %d", layer);
-        zmk_keymap_layer_deactivate(layer, locking);
+        zmk_flag_deactivate(layer, locking);
     }
 }
 
@@ -93,18 +93,18 @@ static int layer_state_changed_listener(const zmk_event_t *ev) {
         // in the config should activate based on the currently active set of if-layers.
         for (int i = 0; i < NUM_CONDITIONAL_LAYER_CFGS; i++) {
             const struct conditional_layer_cfg *cfg = CONDITIONAL_LAYER_CFGS + i;
-            zmk_keymap_layers_state_t mask = cfg->if_layers_state_mask;
+            zmk_flag_state_t mask = cfg->if_layers_state_mask;
             WRITE_BIT(then_layers, cfg->then_layer, true);
             max_then_layer = MAX(max_then_layer, cfg->then_layer);
 
             // Activate then-layer if and only if all if-layers are already active. Note that we
             // reevaluate the current layer state for each config since activation of one layer can
             // also trigger activation of another.
-            if ((zmk_keymap_layer_state() & mask) == mask) {
+            if ((zmk_flag_states() & mask) == mask) {
                 WRITE_BIT(then_layer_state, cfg->then_layer, true);
             }
             // Same as above, but for the lock status
-            if ((zmk_keymap_layer_locks() & mask) == mask) {
+            if ((zmk_flag_locks() & mask) == mask) {
                 WRITE_BIT(layer_locked_by_conditional, cfg->then_layer, true);
             }
         }
@@ -127,6 +127,6 @@ static int layer_state_changed_listener(const zmk_event_t *ev) {
 }
 
 ZMK_LISTENER(conditional_layer, layer_state_changed_listener);
-ZMK_SUBSCRIPTION(conditional_layer, zmk_layer_state_changed);
+ZMK_SUBSCRIPTION(conditional_layer, zmk_flag_state_changed);
 
 #endif

@@ -24,7 +24,7 @@ ZMK_RPC_SUBSYSTEM(keymap)
 #define KEYMAP_NOTIFICATION(type, ...) ZMK_RPC_NOTIFICATION(keymap, type, __VA_ARGS__)
 
 static bool encode_layer_bindings(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
-    const zmk_keymap_layer_id_t layer_id = *(uint8_t *)*arg;
+    const zmk_flag_id_t layer_id = *(uint8_t *)*arg;
 
     for (int b = 0; b < ZMK_KEYMAP_LEN; b++) {
         const struct zmk_behavior_binding *binding =
@@ -68,7 +68,7 @@ static bool encode_layer_name(pb_ostream_t *stream, const pb_field_t *field, voi
 
 static bool encode_keymap_layers(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
     for (zmk_keymap_layer_index_t l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
-        zmk_keymap_layer_id_t layer_id = zmk_keymap_layer_index_to_id(l);
+        zmk_flag_id_t layer_id = zmk_keymap_layer_index_to_id(l);
 
         if (layer_id == UINT8_MAX) {
             break;
@@ -103,7 +103,7 @@ static void populate_keymap_extra_props(zmk_keymap_Keymap *keymap) {
     keymap->available_layers = 0;
 
     for (zmk_keymap_layer_index_t index = 0; index < ZMK_KEYMAP_LAYERS_LEN; index++) {
-        zmk_keymap_layer_id_t id = zmk_keymap_layer_index_to_id(index);
+        zmk_flag_id_t id = zmk_keymap_layer_index_to_id(index);
 
         if (id == UINT8_MAX) {
             keymap->available_layers = ZMK_KEYMAP_LAYERS_LEN - index;
@@ -385,7 +385,7 @@ zmk_studio_Response move_layer(const zmk_studio_Request *req) {
 zmk_studio_Response add_layer(const zmk_studio_Request *req) {
     LOG_DBG("");
     // Use a static here to keep the value valid during serialization
-    static zmk_keymap_layer_id_t layer_id = 0;
+    static zmk_flag_id_t layer_id = 0;
 
     zmk_keymap_AddLayerResponse resp = zmk_keymap_AddLayerResponse_init_zero;
 

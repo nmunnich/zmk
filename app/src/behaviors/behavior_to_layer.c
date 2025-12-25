@@ -11,6 +11,7 @@
 #include <zephyr/logging/log.h>
 
 #include <zmk/keymap.h>
+#include <zmk/flags.h>
 #include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -25,7 +26,12 @@ static int to_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
     const struct behavior_to_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
-    zmk_keymap_layer_to(binding->param1, cfg->locking);
+
+    for (int i = ZMK_KEYMAP_LAYERS_LEN - 1; i >= 0; i--) {
+        zmk_flag_deactivate(i, cfg->locking);
+    }
+
+    zmk_flag_activate(binding->param1, cfg->locking);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 

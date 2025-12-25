@@ -783,7 +783,6 @@ Layers can be identified in two ways: an "order-independent" `zmk_keymap_layer_i
 | `zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer)`             | Activates the chosen layer. Returns 0 if successful. Returns values < 0 if an error occurs.                                          |
 | `zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer)`           | Deactivates the chosen layer. Returns 0 if successful. Returns values < 0 if an error occurs.                                        |
 | `zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer)`               | Toggles the chosen layer. Returns 0 if successful. Returns values < 0 if an error occurs.                                            |
-| `zmk_keymap_layer_to(zmk_keymap_layer_id_t layer)`                   | Deactivates every layer, before activating the chosen layer. Returns 0 if successful. Returns values < 0 if an error occurs.         |
 | `zmk_keymap_layer_name(zmk_keymap_layer_id_t layer)`                 | Returns a C-string containing the layer's name.                                                                                      |
 | `zmk_keymap_layer_index_to_id(zmk_keymap_layer_index_t layer_index)` | Returns the order-independent ID for a given order-dependent layer index.                                                            |
 
