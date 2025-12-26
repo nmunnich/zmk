@@ -32,8 +32,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #endif
 
-#define ZMK_BOTTOM_LAYER_INDEX 0
-
 #define TRANSFORMED_LAYER(node)                                                                    \
     {COND_CODE_1(DT_NODE_HAS_PROP(node, bindings),                                                 \
                  (LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node)),   \

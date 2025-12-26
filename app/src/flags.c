@@ -52,6 +52,10 @@ static inline int set_flag_state(zmk_flag_id_t flag, bool state, bool locking) {
         return -EINVAL;
     }
 
+    if (flag == zmk_keymap_layer_index_to_id(ZMK_BOTTOM_LAYER_INDEX)) {
+        return 0;
+    }
+
     // Non-forcing disables should not change a locked active flag
     if (!locking && !state && (_zmk_flag_locks & BIT(flag))) {
         return ret;

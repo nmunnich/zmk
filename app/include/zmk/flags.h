@@ -24,6 +24,8 @@ typedef uint8_t zmk_flag_id_t;
  */
 typedef uint32_t zmk_flag_state_t;
 
+#define ZMK_BOTTOM_LAYER_INDEX 0
+
 #define ZMK_KEYMAP_LAYERS_FOREACH(_fn)                                                             \
     COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO), (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), _fn)),    \
                 (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), _fn)))

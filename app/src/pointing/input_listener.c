@@ -221,7 +221,7 @@ static int filter_with_input_config(const struct input_listener_config *cfg,
         uint32_t mask = override->layer_mask;
         uint8_t layer = 0;
         while (mask != 0) {
-            if (mask & BIT(0) && zmk_keymap_layer_active(layer)) {
+            if (mask & BIT(0) && zmk_flag_is_active(layer)) {
                 int ret =
                     apply_config(cfg->listener_index, &override->config, override_data, data, evt);
 

@@ -14,7 +14,7 @@
 #include <zmk/behavior.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/events/layer_state_changed.h>
+#include <zmk/events/flag_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -128,7 +128,7 @@ static void layer_disable_callback(struct k_work *work) {
 }
 
 /* Event Handlers */
-static int handle_layer_state_changed(const struct device *dev, const zmk_event_t *eh) {
+static int handle_flag_state_changed(const struct device *dev, const zmk_event_t *eh) {
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
     int ret = k_mutex_lock(&data->lock, K_FOREVER);
     if (ret < 0) {
@@ -199,9 +199,9 @@ static int handle_keycode_state_changed(const struct device *dev, const zmk_even
 }
 
 static int handle_state_changed_dispatcher(const struct device *dev, const zmk_event_t *eh) {
-    if (as_zmk_layer_state_changed(eh) != NULL) {
-        LOG_DBG("Dispatching handle_layer_state_changed");
-        return handle_layer_state_changed(dev, eh);
+    if (as_zmk_flag_state_changed(eh) != NULL) {
+        LOG_DBG("Dispatching handle_flag_state_changed");
+        return handle_flag_state_changed(dev, eh);
     } else if (as_zmk_position_state_changed(eh) != NULL) {
         LOG_DBG("Dispatching handle_position_state_changed");
         return handle_position_state_changed(dev, eh);
