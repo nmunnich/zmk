@@ -35,11 +35,11 @@ static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct behavior_tog_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
     switch (cfg->toggle_mode) {
     case ON:
-        return zmk_keymap_layer_activate(binding->param1, cfg->locking);
+        return zmk_device_state_activate(binding->param1, cfg->locking);
     case OFF:
-        return zmk_keymap_layer_deactivate(binding->param1, cfg->locking);
+        return zmk_device_state_deactivate(binding->param1, cfg->locking);
     case FLIP:
-        return zmk_keymap_layer_toggle(binding->param1, cfg->locking);
+        return zmk_device_state_toggle(binding->param1, cfg->locking);
     default:
         return -ENOTSUP;
     };

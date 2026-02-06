@@ -14,7 +14,7 @@
 
 #include <zmk/event_manager.h>
 #include <zmk/keymap.h>
-#include <zmk/events/layer_state_changed.h>
+#include <zmk/events/device_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -57,9 +57,9 @@ static uint32_t layer_locked_by_conditional = 0;
 static void conditional_layer_activate(int8_t layer, bool locking) {
     // This may trigger another event that could, in turn, activate additional then-layers. However,
     // the process will eventually terminate (at worst, when every layer is active).
-    if (!zmk_keymap_layer_active(layer) || (locking && !zmk_keymap_layer_locked(layer))) {
+    if (!zmk_device_state_active(layer) || (locking && !zmk_device_state_locked(layer))) {
         LOG_DBG("layer %d", layer);
-        zmk_keymap_layer_activate(layer, locking);
+        zmk_device_state_activate(layer, locking);
     }
 }
 
@@ -67,9 +67,9 @@ static void conditional_layer_deactivate(int8_t layer, bool locking) {
     // This may deactivate a then-layer that's already active via another mechanism (e.g., a
     // momentary layer behavior). However, the same problem arises when multiple keys with the same
     // &mo binding are held and then one is released, so it's probably not an issue in practice.
-    if (zmk_keymap_layer_active(layer) && (!zmk_keymap_layer_locked(layer) || locking)) {
+    if (zmk_device_state_active(layer) && (!zmk_device_state_locked(layer) || locking)) {
         LOG_DBG("layer %d", layer);
-        zmk_keymap_layer_deactivate(layer, locking);
+        zmk_device_state_deactivate(layer, locking);
     }
 }
 
@@ -127,6 +127,6 @@ static int layer_state_changed_listener(const zmk_event_t *ev) {
 }
 
 ZMK_LISTENER(conditional_layer, layer_state_changed_listener);
-ZMK_SUBSCRIPTION(conditional_layer, zmk_layer_state_changed);
+ZMK_SUBSCRIPTION(conditional_layer, zmk_device_state_changed);
 
 #endif

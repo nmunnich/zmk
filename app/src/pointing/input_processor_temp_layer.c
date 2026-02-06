@@ -14,7 +14,7 @@
 #include <zmk/behavior.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/events/layer_state_changed.h>
+#include <zmk/events/device_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -72,10 +72,10 @@ static void update_layer_state(struct temp_layer_state *state, bool activate) {
 
     state->is_active = activate;
     if (activate) {
-        zmk_keymap_layer_activate(state->toggle_layer, false);
+        zmk_device_state_activate(state->toggle_layer, false);
         LOG_DBG("Layer %d activated", state->toggle_layer);
     } else {
-        zmk_keymap_layer_deactivate(state->toggle_layer, false);
+        zmk_device_state_deactivate(state->toggle_layer, false);
         LOG_DBG("Layer %d deactivated", state->toggle_layer);
     }
 }
@@ -103,7 +103,7 @@ static void layer_action_work_cb(struct k_work *work) {
 
     while (k_msgq_get(&temp_layer_action_msgq, &action, K_MSEC(10)) >= 0) {
         if (!action.activate) {
-            if (zmk_keymap_layer_active(action.layer)) {
+            if (zmk_device_state_active(action.layer)) {
                 update_layer_state(&data->state, false);
             }
         } else {
@@ -134,7 +134,7 @@ static int handle_layer_state_changed(const struct device *dev, const zmk_event_
     if (ret < 0) {
         return ret;
     }
-    if (!zmk_keymap_layer_active(zmk_keymap_layer_index_to_id(data->state.toggle_layer))) {
+    if (!zmk_device_state_active(zmk_keymap_layer_index_to_id(data->state.toggle_layer))) {
         LOG_DBG("Deactivating layer that was activated by this processor");
         data->state.is_active = false;
         k_work_cancel_delayable(&layer_disable_works[data->state.toggle_layer]);
@@ -199,7 +199,7 @@ static int handle_keycode_state_changed(const struct device *dev, const zmk_even
 }
 
 static int handle_state_changed_dispatcher(const struct device *dev, const zmk_event_t *eh) {
-    if (as_zmk_layer_state_changed(eh) != NULL) {
+    if (as_zmk_device_state_changed(eh) != NULL) {
         LOG_DBG("Dispatching handle_layer_state_changed");
         return handle_layer_state_changed(dev, eh);
     } else if (as_zmk_position_state_changed(eh) != NULL) {
@@ -290,7 +290,7 @@ static const struct zmk_input_processor_driver_api temp_layer_driver_api = {
 
 /* Event Handlers Registration */
 ZMK_LISTENER(processor_temp_layer, handle_event_dispatcher);
-ZMK_SUBSCRIPTION(processor_temp_layer, zmk_layer_state_changed);
+ZMK_SUBSCRIPTION(processor_temp_layer, zmk_device_state_changed);
 
 /* Individual Subscriptions */
 #if DT_INST_FOREACH_STATUS_OKAY_VARGS(NEEDS_POSITION_HANDLERS, ||)

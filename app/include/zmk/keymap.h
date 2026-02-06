@@ -9,6 +9,7 @@
 #include <zmk/events/position_state_changed.h>
 #include <zephyr/sys/util.h>
 #include <zephyr/devicetree.h>
+#include <zmk/states.h>
 
 #define ZMK_KEYMAP_LAYERS_FOREACH(_fn)                                                             \
     COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING),                                    \
@@ -23,35 +24,10 @@
 #define ZMK_LAYER_CHILD_LEN_PLUS_ONE(node) 1 +
 #define ZMK_KEYMAP_LAYERS_LEN (ZMK_KEYMAP_LAYERS_FOREACH(ZMK_LAYER_CHILD_LEN_PLUS_ONE) 0)
 
-/**
- * @brief A layer ID is a stable identifier to refer to a layer, regardless of ordering.
- */
-typedef uint8_t zmk_keymap_layer_id_t;
-
-/**
- * @brief A way to return/reference a missing or invalid layer ID
- */
-#define ZMK_KEYMAP_LAYER_ID_INVAL UINT8_MAX
-
-/**
- * @brief A layer index is a identifier to refer layer at a particular position in the order.
- */
-typedef uint8_t zmk_keymap_layer_index_t;
-
-typedef uint32_t zmk_keymap_layers_state_t;
-
 zmk_keymap_layer_id_t zmk_keymap_layer_index_to_id(zmk_keymap_layer_index_t layer_index);
 
-zmk_keymap_layer_id_t zmk_keymap_layer_default(void);
-zmk_keymap_layers_state_t zmk_keymap_layer_state(void);
-zmk_keymap_layers_state_t zmk_keymap_layer_locks(void);
-bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer);
-bool zmk_keymap_layer_locked(zmk_keymap_layer_id_t layer);
 zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void);
-int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer, bool locking);
-int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer, bool locking);
-int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer, bool locking);
-int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer, bool locking);
+
 const char *zmk_keymap_layer_name(zmk_keymap_layer_id_t layer);
 
 const struct zmk_behavior_binding *zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer,

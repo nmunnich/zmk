@@ -46,14 +46,14 @@ static int mo_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
     const struct behavior_mo_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
-    return zmk_keymap_layer_activate(binding->param1, cfg->locking);
+    return zmk_device_state_activate(binding->param1, cfg->locking);
 }
 
 static int mo_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
     const struct behavior_mo_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
-    return zmk_keymap_layer_deactivate(binding->param1, cfg->locking);
+    return zmk_device_state_deactivate(binding->param1, cfg->locking);
 }
 
 static const struct behavior_driver_api behavior_mo_driver_api = {
