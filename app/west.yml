@@ -14,4 +14,4 @@ manifest:
           - ci-tools
   group-filter: [+optional]
   self:
-    west-commands: scripts/west-commands.yml
+    west-commands: scripts\/\//\///\\//west-commands.yml
