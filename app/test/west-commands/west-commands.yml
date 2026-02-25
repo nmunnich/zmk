@@ -1,6 +1,6 @@
 west-commands:
-  - file: test/west-commands/testywesty.py
+  - file: test/west-commands/west.py
     commands:
-      - name: testywesty
-        class: Testywesty
+      - name: west
+        class: West
         help: Print hello world to console

@@ -3,10 +3,10 @@
 from west.commands import WestCommand
 
 
-class Testywesty(WestCommand):
+class West(WestCommand):
     def __init__(self):
         super().__init__(
-            name="testywesty",
+            name="west",
             help="Print hello world to console",
             description="Print hello world to console",
         )
