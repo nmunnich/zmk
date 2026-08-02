@@ -15,14 +15,11 @@ struct ec11_config {
     const struct gpio_dt_spec b;
 
     const uint16_t steps;
-    const uint8_t resolution;
 };
 
 struct ec11_data {
     uint8_t ab_state;
     int8_t pulses;
-    int8_t ticks;
-    int8_t delta;
 
 #ifdef CONFIG_EC11_TRIGGER
     struct gpio_callback a_gpio_cb;

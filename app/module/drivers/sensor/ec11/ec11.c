@@ -60,16 +60,6 @@ static int ec11_sample_fetch(const struct device *dev, enum sensor_channel chan)
 
     drv_data->pulses += delta;
     drv_data->ab_state = val;
-
-    // TODO: Temporary code for backwards compatibility to support
-    // the sensor channel rotation reporting *ticks* instead of delta of degrees.
-    // REMOVE ME
-    if (drv_cfg->steps == 0) {
-        drv_data->ticks = drv_data->pulses / drv_cfg->resolution;
-        drv_data->delta = delta;
-        drv_data->pulses %= drv_cfg->resolution;
-    }
-
     return 0;
 }
 
@@ -84,17 +74,11 @@ static int ec11_channel_get(const struct device *dev, enum sensor_channel chan,
     }
 
     drv_data->pulses = 0;
-
-    if (drv_cfg->steps > 0) {
-        val->val1 = (pulses * FULL_ROTATION) / drv_cfg->steps;
-        val->val2 = (pulses * FULL_ROTATION) % drv_cfg->steps;
-        if (val->val2 != 0) {
-            val->val2 *= 1000000;
-            val->val2 /= drv_cfg->steps;
-        }
-    } else {
-        val->val1 = drv_data->ticks;
-        val->val2 = drv_data->delta;
+    val->val1 = (pulses * FULL_ROTATION) / drv_cfg->steps;
+    val->val2 = (pulses * FULL_ROTATION) % drv_cfg->steps;
+    if (val->val2 != 0) {
+        val->val2 *= 1000000;
+        val->val2 /= drv_cfg->steps;
     }
 
     return 0;
@@ -112,8 +96,8 @@ int ec11_init(const struct device *dev) {
     struct ec11_data *drv_data = dev->data;
     const struct ec11_config *drv_cfg = dev->config;
 
-    LOG_DBG("A: %s %d B: %s %d resolution %d", drv_cfg->a.port->name, drv_cfg->a.pin,
-            drv_cfg->b.port->name, drv_cfg->b.pin, drv_cfg->resolution);
+    LOG_DBG("A: %s %d B: %s %d", drv_cfg->a.port->name, drv_cfg->a.pin,
+            drv_cfg->b.port->name, drv_cfg->b.pin);
 
     if (!device_is_ready(drv_cfg->a.port)) {
         LOG_ERR("A GPIO device is not ready");
@@ -152,7 +136,6 @@ int ec11_init(const struct device *dev) {
     static const struct ec11_config ec11_cfg_##n = {                                               \
         .a = GPIO_DT_SPEC_INST_GET(n, a_gpios),                                                    \
         .b = GPIO_DT_SPEC_INST_GET(n, b_gpios),                                                    \
-        .resolution = DT_INST_PROP_OR(n, resolution, 1),                                           \
         .steps = DT_INST_PROP_OR(n, steps, 0),                                                     \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, ec11_init, NULL, &ec11_data_##n, &ec11_cfg_##n, POST_KERNEL,          \
