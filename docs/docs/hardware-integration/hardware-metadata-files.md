@@ -112,3 +112,52 @@ siblings:
 ```
 
 Future versions of the metadata file format will be expanded to allow documenting any specifics of each sibling that are unique, e.g. if only the left side contains the `encoder` feature.
+
+### Power (Boards Only)
+
+Board metadata can optionally include information about the power efficiency of the components used.
+This information is used by the ZMK Power Profiler to estimate battery charge lifetime.
+
+A `power` entry includes:
+
+- `power_supply`
+  - `type`: `LDO` or `SWITCHING`
+  - `output_voltage`
+  - `quiescent_micro_a`
+  - `efficiency` (optional, used for switching supplies)
+- `other_quiescent_micro_a` (optional)
+
+For example, the `nice60.zmk.yml` file:
+
+```yaml
+power:
+  power_supply:
+    type: SWITCHING
+    output_voltage: 3.3
+    efficiency: 0.95
+    quiescent_micro_a: 4
+  other_quiescent_micro_a: 4
+```
+
+If a board has multiple revisions, `power` can also accept a list of entries.
+When this is the case, a `suffix` can be added as a key in the entry that will be appended to the board's name when displaying the board revision in the ZMK Power Profiler.
+
+For example, the `nice_nano.zmk.yml` file:
+
+```yaml
+power:
+  - suffix: v1
+    power_supply:
+      type: LDO
+      output_voltage: 3.3
+      quiescent_micro_a: 55
+    other_quiescent_micro_a: 4
+  - suffix: v2
+    power_supply:
+      type: LDO
+      output_voltage: 3.3
+      quiescent_micro_a: 15
+    other_quiescent_micro_a: 3
+```
+
+The boards are then displayed as "nice!nano v1" and "nice!nano v2".
