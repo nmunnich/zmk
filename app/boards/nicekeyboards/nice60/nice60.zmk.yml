@@ -11,3 +11,10 @@ outputs:
   - usb
   - ble
 url: https://nicekeyboards.com/nice-60
+power:
+  power_supply:
+    type: SWITCHING
+    output_voltage: 3.3
+    efficiency: 0.95
+    quiescent_micro_a: 4
+  other_quiescent_micro_a: 4

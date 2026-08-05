@@ -10,6 +10,8 @@
  * The test device to get these values was three nice!nanos (nRF52840).
  */
 
+import hardwareMetadata from "@site/src/data/hardware-metadata.json";
+
 export const zmkBase = {
   hostConnection: 23, // How much current it takes to have an idle host connection
   standalone: {
@@ -26,44 +28,48 @@ export const zmkBase = {
   },
 };
 
+function mapPowerSupplyMetadataToRuntimeNames(powerSupply) {
+  return {
+    type: powerSupply.type,
+    outputVoltage: powerSupply.output_voltage,
+    quiescentMicroA: powerSupply.quiescent_micro_a,
+    efficiency: powerSupply.efficiency,
+  };
+}
+
+function powerProfileFromMetadata(metadataItem, profile, index) {
+  return {
+    id: `${metadataItem.id}::${index}`,
+    name: `${metadataItem.name}${profile.suffix ? ` ${profile.suffix}` : ""}`,
+    powerSupply: mapPowerSupplyMetadataToRuntimeNames(profile.power_supply),
+    otherQuiescentMicroA: profile.other_quiescent_micro_a ?? 0,
+  };
+}
+
+const powerProfiles = hardwareMetadata.flatMap((metadataItem) => {
+  if (metadataItem.type !== "board" || !metadataItem.power) {
+    return [];
+  }
+
+  const profiles = Array.isArray(metadataItem.power)
+    ? metadataItem.power
+    : [metadataItem.power];
+
+  return profiles.map((profile, index) =>
+    powerProfileFromMetadata(metadataItem, profile, index)
+  );
+});
+
+export const zmkBoards = Object.fromEntries(
+  powerProfiles.map((profile) => [profile.id, profile])
+);
+
 /**
  * ZMK board power measurements
  *
- * Power supply can be an LDO or switching
- * Quiescent and other quiescent are measured in micro amps
- *
- * Switching efficiency represents the efficiency of converting from
- * 3.8V (average li-ion voltage) to the output voltage of the power supply
+ * Board and shield power usage is sourced from the hardware metadata files.
+ * Power supply can be an LDO or switching.
  */
-export const zmkBoards = {
-  "nice!nano": {
-    name: "nice!nano v1",
-    powerSupply: {
-      type: "LDO",
-      outputVoltage: 3.3,
-      quiescentMicroA: 55,
-    },
-    otherQuiescentMicroA: 4,
-  },
-  "nice!nano v2": {
-    name: "nice!nano v2",
-    powerSupply: {
-      type: "LDO",
-      outputVoltage: 3.3,
-      quiescentMicroA: 15,
-    },
-    otherQuiescentMicroA: 3,
-  },
-  "nice!60": {
-    powerSupply: {
-      type: "SWITCHING",
-      outputVoltage: 3.3,
-      efficiency: 0.95,
-      quiescentMicroA: 4,
-    },
-    otherQuiescentMicroA: 4,
-  },
-};
 
 export const underglowPower = {
   firmware: 60, // ZMK power usage while underglow feature is turned on (SPIM mostly)

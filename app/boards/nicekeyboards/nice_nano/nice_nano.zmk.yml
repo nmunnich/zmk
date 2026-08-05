@@ -7,6 +7,19 @@ outputs:
   - usb
   - ble
 url: https://nicekeyboards.com/nice-nano
+power:
+  - suffix: v1
+    power_supply:
+      type: LDO
+      output_voltage: 3.3
+      quiescent_micro_a: 55
+    other_quiescent_micro_a: 4
+  - suffix: v2
+    power_supply:
+      type: LDO
+      output_voltage: 3.3
+      quiescent_micro_a: 15
+    other_quiescent_micro_a: 3
 exposes: [pro_micro]
 revisions:
   - "1.0.0"

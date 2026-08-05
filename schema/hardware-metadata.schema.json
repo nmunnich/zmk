@@ -69,6 +69,59 @@
         "$ref": "#/$defs/id"
       }
     },
+    "power_supply": {
+      "title": "PowerSupply",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "output_voltage", "quiescent_micro_a"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["LDO", "SWITCHING"]
+        },
+        "output_voltage": {
+          "type": "number"
+        },
+        "quiescent_micro_a": {
+          "type": "number"
+        },
+        "efficiency": {
+          "type": "number"
+        }
+      }
+    },
+    "power_entry": {
+      "title": "PowerEntry",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["power_supply"],
+      "properties": {
+        "suffix": {
+          "type": "string"
+        },
+        "power_supply": {
+          "$ref": "#/$defs/power_supply"
+        },
+        "other_quiescent_micro_a": {
+          "type": "number"
+        }
+      }
+    },
+    "power": {
+      "title": "Power",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/power_entry"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/power_entry"
+          }
+        }
+      ]
+    },
     "sibling_details": {
       "type": "object",
       "additionalProperties": false,
@@ -204,6 +257,9 @@
           "items": {
             "$ref": "#/$defs/variant"
           }
+        },
+        "power": {
+          "$ref": "#/$defs/power"
         },
         "exposes": {
           "$ref": "#/$defs/interconnects"

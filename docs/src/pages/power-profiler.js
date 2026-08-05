@@ -104,8 +104,10 @@ function PowerProfiler() {
                     <option hidden value="">
                       Select a board
                     </option>
-                    {Object.keys(zmkBoards).map((b) => (
-                      <option key={b}>{b}</option>
+                    {Object.entries(zmkBoards).map(([key, b]) => (
+                      <option key={key} value={key}>
+                        {b.name}
+                      </option>
                     ))}
                     <option value="custom">Custom</option>
                   </select>
